@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatLauncher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="BatLauncher" Height="350" Width="400">
     <Grid>
-        
+        <Menu>
+            <MenuItem Header="設定" Click="MenuItem_Click" IsTabStop="False">
+            </MenuItem>
+        </Menu>
+        <StackPanel Margin="20">
+            <TextBox x:Name="SearchBox"
+                     TextChanged="SearchBox_TextChanged"/>
+            <ListView x:Name="BatFileNameList"
+                      Margin="0,5,0,0"
+                      Height="250"
+                      KeyDown="BatFileNameList_KeyDown"
+                      GotFocus="BatFileNameList_GotFocus">
+            </ListView>
+        </StackPanel>
     </Grid>
 </Window>

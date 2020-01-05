@@ -1,0 +1,42 @@
+﻿<Window x:Class="BatLauncher.ConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BatLauncher"
+        mc:Ignorable="d"
+        Title="設定" Height="300" Width="400">
+    <Grid>
+        <StackPanel>
+            <Label Content="Bat配置フォルダ"/>
+            <ListView x:Name="PathList" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding Value}" Grid.Column="0"></TextBox>
+                            <Button Content="x" Grid.Column="1" ToolTip="削除" HorizontalAlignment="Right" Click="RemovePathListItemButton_Click"></Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Name="AddPathListItemTextBox" ToolTip="入力してEnterで追加" KeyDown="AddPathListItemTextBox_KeyDown" Grid.Column="0"/>
+                    <Button Content="..." Grid.Column="1" HorizontalAlignment="Right" Click="DirRefButton_Click"/>
+                </Grid>
+            </ListView>
+            <DockPanel LastChildFill="False" HorizontalAlignment="Center">
+                <Button Content="決定" Width="100" Margin="0" Click="SubmitButton_Click"/>
+                <Button Content="キャンセル" Width="100" Margin="10,0,0,0" Click="CancelButton_Click"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>
