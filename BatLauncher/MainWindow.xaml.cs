@@ -1,4 +1,8 @@
-﻿using System;
+﻿//========================================================================================
+// メインウィンドウ.
+// Auther: Akihiro Imada
+//========================================================================================
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,6 +20,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace BatLauncher
 {
@@ -33,6 +38,15 @@ namespace BatLauncher
 
             RefreshFileList();
             BatFileNameList.ItemsSource = m_batFileList;
+            // ウィンドウのサイズを復元
+            RecoverWindowBounds();
+        }
+
+        protected override void OnClosing( CancelEventArgs e )
+        {
+            // ウィンドウのサイズを保存
+            SaveWindowBounds();
+            base.OnClosing( e );
         }
 
         private void RefreshFileList()
@@ -57,9 +71,13 @@ namespace BatLauncher
 
         private void SearchBox_TextChanged( object sender, TextChangedEventArgs e )
         {
-            var filterList =
-                m_batFileList.Where( x => x.Name.Contains( SearchBox.Text ) ).ToList();
-            BatFileNameList.ItemsSource = filterList;
+            var filterList = m_batFileList.OrderBy( x => {
+                string withoutExtName = System.IO.Path.GetFileNameWithoutExtension( x.Name );
+                float baseCost = withoutExtName.NormalizedLevenshteinDistance( SearchBox.Text, false );
+                float containCost = withoutExtName.Contains( SearchBox.Text ) ? 0.0f : 1.0f;
+                return baseCost + containCost;
+            } );
+            BatFileNameList.ItemsSource = filterList.Take( Define.CANDIDATE_MAX );
         }
 
         private void BatFileNameList_KeyDown( object sender, KeyEventArgs e )
@@ -84,7 +102,7 @@ namespace BatLauncher
             }
         }
 
-        private void MenuItem_Click( object sender, RoutedEventArgs e )
+        private void ConfigMenuItem_Click( object sender, RoutedEventArgs e )
         {
             ConfigWindow win = new ConfigWindow();
             win.Owner = GetWindow( this );
@@ -92,26 +110,72 @@ namespace BatLauncher
             RefreshFileList();
         }
 
+        private void RefreshMenuItem_Click( object sender, RoutedEventArgs e )
+        {
+            RefreshFileList();
+        }
+
         private void HelpAboutSoftwareMenuItem_Click( object sender, RoutedEventArgs e )
         {
             MessageBox.Show( 
-                "BatLauncher\n" +
+                "BatLauncher ver1.1.0\n" +
                 "\n" +
-                "このソフトウェアはオープンソースです．"+
+                "このソフトウェアはオープンソースです．\n"+
                 "The MIT License( MIT )\n" +
                 "Copyright( c ) 2020 AkihiroImada\n" +
-                "https://github.com/AkihiroImada/BatLauncher/blob/master/LICENSE" + "\n"+
-                "\n" +
-                "このソフトウェアは一部に以下のライセンスが適用されたソースコードを利用しています.\n" +
-                "The MIT License( MIT )\n" +
-                "Copyright( c ) 2007 James Newton - King\n" +
-                "https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md"
+                "https://github.com/AkihiroImada/BatLauncher/blob/master/LICENSE"
                 );
+        }
+
+        /// <summary>
+        /// ウィンドウの位置・サイズを保存します。
+        /// </summary>
+        private void SaveWindowBounds()
+        {
+            var settings = Properties.Settings.Default;
+            settings.WindowMaximized = WindowState == WindowState.Maximized;
+            WindowState = WindowState.Normal; // 最大化解除
+            settings.WindowLeft = Left;
+            settings.WindowTop = Top;
+            settings.WindowWidth = Width;
+            settings.WindowHeight = Height;
+            settings.Save();
+        }
+
+        /// <summary>
+        /// ウィンドウの位置・サイズを復元します。
+        /// </summary>
+        void RecoverWindowBounds()
+        {
+            var settings = Properties.Settings.Default;
+            // 左
+            if ( settings.WindowLeft >= 0 &&
+                (settings.WindowLeft + settings.WindowWidth) < SystemParameters.VirtualScreenWidth )
+            { Left = settings.WindowLeft; }
+            // 上
+            if ( settings.WindowTop >= 0 &&
+                (settings.WindowTop + settings.WindowHeight) < SystemParameters.VirtualScreenHeight )
+            { Top = settings.WindowTop; }
+            // 幅
+            if ( settings.WindowWidth > 0 &&
+                settings.WindowWidth <= SystemParameters.WorkArea.Width )
+            { Width = settings.WindowWidth; }
+            // 高さ
+            if ( settings.WindowHeight > 0 &&
+                settings.WindowHeight <= SystemParameters.WorkArea.Height )
+            { Height = settings.WindowHeight; }
+            // 最大化
+            if ( settings.WindowMaximized )
+            {
+                // ロード後に最大化
+                Loaded += ( o, e ) => WindowState = WindowState.Maximized;
+            }
         }
     }
 
     public static class Define
     {
+        public static readonly int CANDIDATE_MAX = 20;
         public static readonly string CONFIG_FILE = "config.json";
     }
 

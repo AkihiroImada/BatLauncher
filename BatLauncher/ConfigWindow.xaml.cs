@@ -1,4 +1,8 @@
-﻿using System;
+﻿//========================================================================================
+// 設定ウィンドウ.
+// Auther: Akihiro Imada
+//========================================================================================
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

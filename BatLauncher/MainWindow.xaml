@@ -8,7 +8,8 @@
         Title="BatLauncher" Height="350" Width="400">
     <Grid>
         <Menu>
-            <MenuItem Header="設定" Click="MenuItem_Click" IsTabStop="False"/>
+            <MenuItem Header="設定" Click="ConfigMenuItem_Click" IsTabStop="False"/>
+            <MenuItem Header="更新" Click="RefreshMenuItem_Click" IsTabStop="False"/>
             <MenuItem Header="ヘルプ" IsTabStop="False">
                 <MenuItem Header="このソフトウェアについて" Click="HelpAboutSoftwareMenuItem_Click" IsCheckable="False" IsTabStop="False"/>
             </MenuItem>
