@@ -1,4 +1,7 @@
 # README
+## Demo
+![Demo](https://github.com/AkihiroImada/BatLauncher/blob/pic/BatLauncherDemo.gif)
+
 ## 本ソフトウェアに含まれるオープンソースソフトウェアとライセンス
 - Newtonsoft.Json  
   The MIT License( MIT )  
