@@ -91,6 +91,23 @@ namespace BatLauncher
             win.ShowDialog();
             RefreshFileList();
         }
+
+        private void HelpAboutSoftwareMenuItem_Click( object sender, RoutedEventArgs e )
+        {
+            MessageBox.Show( 
+                "BatLauncher\n" +
+                "\n" +
+                "このソフトウェアはオープンソースです．"+
+                "The MIT License( MIT )\n" +
+                "Copyright( c ) 2020 AkihiroImada\n" +
+                "https://github.com/AkihiroImada/BatLauncher/blob/master/LICENSE" + "\n"+
+                "\n" +
+                "このソフトウェアは一部に以下のライセンスが適用されたソースコードを利用しています.\n" +
+                "The MIT License( MIT )\n" +
+                "Copyright( c ) 2007 James Newton - King\n" +
+                "https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md"
+                );
+        }
     }
 
     public static class Define
